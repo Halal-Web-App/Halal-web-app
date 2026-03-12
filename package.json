@@ -1,4 +1,15 @@
 {
+  "name": "halal-restaurant-finder",
+  "version": "1.0.0",
+  "description": "Halal restaurant finder with confidence scores",
+  "scripts": {
+    "start:server": "cd server && npm start",
+    "start:client": "cd client && npm start",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install --legacy-peer-deps",
+    "migrate": "PGPASSWORD=password psql -h localhost -U postgres -d yelp -f server/DB/db.sql",
+    "score:all": "cd server && node -e \"require('dotenv').config(); const db=require('./db'); const {updateRestaurantHalalScore}=require('./services/halalScore'); (async()=>{const r=await db.query('SELECT id FROM restaurants'); for(const row of r.rows) await updateRestaurantHalalScore(db,row.id); console.log('Done:',r.rows.length,'restaurants scored'); process.exit(0);})();\"",
+    "seed": "cd scrape_data && node to_db.js ../restaurants.json"
+  },
   "dependencies": {
     "dotenv": "^16.4.7",
     "serpapi": "^2.1.0"
